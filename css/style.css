@@ -1,0 +1,409 @@
+/* ==========================================================================
+   css/style.css — BIP (Bootstrap 5)
+
+   Skrót:
+   • Jednolity „kafelkowy” wygląd pozycji menu (1. i 2. poziom)
+   • Odstępy/wysokość/zwężenie podmenu sterowane zmiennymi
+   • Wskaźniki po prawej:
+       – kategorie (accordion): ► / ▼
+       – zwykłe podkategorie: brak wskaźnika (także gdy aktywne)
+   • Aktywna kategoria główna: tło --bip-cat-active-bg (#CCE0FF),
+     tekst --bip-cat-active-text (jak standardowy tekst menu)
+   • Belki (np. „Menu”, tytuły treści): --bip-bar-bg / --bip-bar-fg
+   • Wysoki kontrast (.high-contrast): czarne tło, białe elementy,
+     białe strzałki ►/▼ (bez filtrów)
+   ========================================================================== */
+
+
+/* =============================
+   0) Zmienne motywu (konfiguracja)
+   ============================= */
+:root{
+  /* Teksty i brand */
+  --bip-blue:               #0d6efd;
+  --bip-blue-dark:          #002b80;       /* podstawowy kolor napisów w menu */
+
+  /* Stany hover/focus */
+  --bip-hl-bg:              #cce0ff;
+  --bip-hl-text:            var(--bip-blue-dark);
+
+  /* Stany aktywne (podkategorie) */
+  --bip-active-bg:          #e6f2ff;
+  --bip-active-text:        var(--bip-blue-dark);
+
+  /* Tryb wysokiego kontrastu (global) */
+  --bip-contrast-bg:        #000;
+  --bip-contrast-fg:        #fff;
+
+  /* Ramki / rogi */
+  --bip-border-soft:        rgba(0,0,0,.1);
+  --bip-border-ultra-soft:  rgba(0,0,0,.075);
+  --bip-active-outline:     #000;          /* wyraźna ramka dla stanów active */
+  --bip-active-outline-w:   2px;
+  --bip-active-radius:      0;             /* 0 = ostre rogi */
+
+  /* Kategoria główna (rozwinięta) */
+  --bip-cat-active-bg:      #CCE0FF;
+  --bip-cat-active-text:    var(--bip-blue-dark);
+
+  /* Belki (np. Menu, nagłówki treści) */
+  --bip-bar-bg:             #283044;
+  --bip-bar-fg:             #fff;
+
+  /* Wymiary i odstępy kafelków */
+  --bip-tile-gap:           .5rem;         /* pionowy odstęp między kafelkami */
+  --bip-tile-minh:          48px;          /* minimalna wysokość kafelka */
+
+  /* Zwężenie kafelków 2. poziomu względem kolumny */
+  --bip-submenu-inset-x:    .5rem;         /* np. .375rem albo .75rem */
+
+  /* HC – wygląd aktywnych pozycji (czytelne na czarnym tle) */
+  --bip-hc-active-bg:       #ffff00;
+  --bip-hc-active-text:     #000;
+}
+
+
+/* =============================
+   1) Skip link (WCAG)
+   ============================= */
+.skip-link{
+  position:absolute; left:0; top:0;
+  transform:translateY(-200%);
+  padding:.5rem 1rem;
+  background:var(--bip-blue); color:#fff;
+  border-radius:.25rem; z-index:2000;
+  clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden;
+  white-space:nowrap;
+}
+.skip-link:focus-visible{
+  transform:none; clip:auto; clip-path:none; overflow:visible;
+}
+
+
+/* =============================
+   2) Pasek dostępności (np. A-/A/A+)
+   ============================= */
+.access-toolbar{ z-index:1056; }
+.access-btn:focus-visible{ outline:2px solid currentColor; outline-offset:2px; }
+
+
+/* =============================
+   3) Hero (grafika nagłówkowa)
+   ============================= */
+.hero img{ width:100%; height:auto; display:block; }
+@media (min-width:768px){
+  .hero img{ max-height:420px; object-fit:cover; }
+}
+
+
+/* =============================
+   4) Sidebar (desktop) – separator kolumn
+   ============================= */
+@media (min-width:768px){
+  aside.sidebar{ border-right:1px solid var(--bip-border-soft); }
+}
+
+
+/* =============================
+   5) Preferencje redukcji ruchu
+   ============================= */
+@media (prefers-reduced-motion:reduce){
+  .collapsing, .offcanvas, .accordion-button{ transition:none !important; }
+}
+
+
+/* =============================
+   6) Belki (MENU i tytuły treści)
+   ============================= */
+.bip-box-title{
+  background-color:var(--bip-bar-bg);
+  color:var(--bip-bar-fg);
+  padding:.75rem 1rem;
+  margin-bottom:1rem;
+  border-radius:.25rem;
+  font-weight:600;
+  display:flex; align-items:center;
+  width:100%; box-sizing:border-box;
+  font-size:1.25rem; line-height:1.4; /* ~h5 */
+}
+.bip-box-title .bi{ margin-right:.5rem; font-size:1.2em; }
+/* HC – belka */
+.high-contrast .bip-box-title{
+  background-color:var(--bip-contrast-bg) !important;
+  color:var(--bip-contrast-fg) !important;
+  border:1px solid var(--bip-contrast-fg);
+}
+
+
+/* =============================
+   7) Sitemap (spis treści)
+   ============================= */
+.sitemap section + section{
+  border-top:1px solid var(--bip-border-ultra-soft);
+  padding-top:1rem;
+}
+.sitemap ul{ margin:0; }
+
+
+/* ======================================================================
+   8) MENU (sidebar/offcanvas) — kafelki, odstępy i wskaźniki
+   ====================================================================== */
+
+/* 8.0 Linki jako .accordion-button */
+a.accordion-button{ display:block; }
+
+/* 8.1 Reset borderów BS (brak dublowania ramek) */
+:where(.sidebar, .offcanvas) .list-group,
+:where(.sidebar, .offcanvas) .list-group.list-group-flush{
+  --bs-list-group-border-color:transparent !important;
+  --bs-list-group-border-width:0 !important;
+  padding:0; margin:0;
+}
+:where(.sidebar, .offcanvas) .list-group-item,
+:where(.sidebar, .offcanvas) .list-group-item.active,
+:where(.sidebar, .offcanvas) .accordion-item,
+:where(.sidebar, .offcanvas) .accordion-collapse{
+  border:0 !important; box-shadow:none !important; background:transparent;
+  padding:0; margin:0;
+}
+
+/* 8.2 Wspólny „kafelek” (kategorie i podkategorie) */
+:where(.sidebar, .offcanvas) .accordion-button,
+:where(.sidebar, .offcanvas) .list-group-item > a{
+  display:flex; align-items:center; gap:.75rem;
+  width:100%;
+  padding:1rem 1.25rem;
+  margin:0 0 var(--bip-tile-gap) 0;        /* jednolite odstępy */
+  min-height:var(--bip-tile-minh);
+  line-height:1.2;
+  font-size:1.1rem; font-weight:700;
+  text-decoration:none;
+  color:var(--bip-blue-dark);
+  background-color:#fff;
+  border:var(--bip-active-outline-w) solid var(--bip-border-soft);
+  border-radius:var(--bip-active-radius);
+  box-shadow:none !important;
+}
+
+/* 8.3 Otwarta kategoria: bez marginesu na dole
+      (odstęp zapewnia padding-top w .accordion-body) */
+:where(.sidebar, .offcanvas) .accordion-button:not(.collapsed){
+  margin-bottom:0 !important;
+}
+
+/* 8.4 Symetryczny „oddech” podmenu (przebija .p-0 z BS) */
+:where(.sidebar, .offcanvas) .accordion-body,
+:where(.sidebar, .offcanvas) .accordion-body.p-0{
+  padding-top:var(--bip-tile-gap) !important;
+  padding-bottom:var(--bip-tile-gap) !important;
+}
+
+/* 8.5 Zwężenie 2. poziomu (naturalnie węższe od głównych kafelków) */
+:where(.sidebar, .offcanvas)
+.accordion-collapse > .accordion-body > .list-group > .list-group-item > a{
+  margin-left:var(--bip-submenu-inset-x) !important;
+  margin-right:var(--bip-submenu-inset-x) !important;
+  width:auto;
+}
+
+/* 8.6 Hover / Focus — subtelny highlight */
+:where(.sidebar, .offcanvas) .accordion-button:hover,
+:where(.sidebar, .offcanvas) .accordion-button:focus-visible,
+:where(.sidebar, .offcanvas) .list-group-item:hover > a,
+:where(.sidebar, .offcanvas) .list-group-item:focus-within > a,
+:where(.sidebar, .offcanvas) .list-group-item > a:focus-visible{
+  background-color:var(--bip-hl-bg);
+  color:var(--bip-hl-text);
+  border-color:color-mix(in srgb, var(--bip-active-outline) 50%, var(--bip-border-soft));
+  outline:none;
+}
+
+/* 8.7 Stany AKTYWNE */
+  /* Kategoria główna (otwarta) */
+:where(.sidebar, .offcanvas) .accordion-button:not(.collapsed){
+  background-color:var(--bip-cat-active-bg) !important;
+  color:var(--bip-cat-active-text) !important;
+  border-color:var(--bip-active-outline) !important;
+}
+:where(.sidebar, .offcanvas) .accordion-button:not(.collapsed):hover,
+:where(.sidebar, .offcanvas) .accordion-button:not(.collapsed):focus-visible{
+  background-color:var(--bip-cat-active-bg) !important;
+  color:var(--bip-cat-active-text) !important;
+  border-color:var(--bip-active-outline) !important;
+}
+  /* Podkategoria aktywna */
+:where(.sidebar, .offcanvas) .list-group-item.active > a,
+:where(.sidebar, .offcanvas) .list-group-item > a.active,
+:where(.sidebar, .offcanvas) .list-group-item > a[aria-current="page"]{
+  background-color:var(--bip-active-bg) !important;
+  color:var(--bip-active-text) !important;
+  border-color:var(--bip-active-outline) !important;
+  box-shadow:none !important;
+}
+
+/* 8.8 Wskaźniki po prawej (tekstowe, bez SVG) */
+  /* Kategorie (accordion) — ► / ▼; strzałki dziedziczą kolor tekstu */
+:where(.sidebar, .offcanvas) .accordion-button::after{
+  background-image:none !important;   /* wyłącz ikonę Bootstrapa */
+  transform:none !important;
+  margin-left:auto;
+  font-family:Arial, sans-serif;
+  font-weight:bold;
+  font-size:.9rem;
+  color:currentColor;
+  content:"►";                         /* zwinięte */
+}
+:where(.sidebar, .offcanvas) .accordion-button:not(.collapsed)::after{
+  content:"▼";                         /* rozwinięte */
+  }
+.accordion-button.bip-no-arrow::after{
+  display:none;
+}
+  /* Podkategorie 2. poziomu — DOMYŚLNIE brak wskaźnika (nawet gdy aktywne) */
+:where(.sidebar, .offcanvas) .list-group > .list-group-item > a:not(.submenu-toggle)::after{
+  content:none;
+}
+  /* Link 2. poziomu będący TOGGLE’em (ma dzieci = poziom 3) – ►/▼ */
+:where(.sidebar, .offcanvas) .list-group > .list-group-item > a.submenu-toggle::after{
+  content:"►";
+  margin-left:auto;
+  display:inline-block;
+  font-family:Arial, sans-serif;
+  font-weight:bold; font-size:.9rem;
+  color:currentColor;
+}
+:where(.sidebar, .offcanvas) .list-group > .list-group-item > a.submenu-toggle[aria-expanded="true"]::after{
+  content:"▼";
+}
+
+/* 8.9 Dostępność — bez domyślnego outline przeglądarki na linkach */
+:where(.sidebar, .offcanvas) .list-group-item > a:focus{ outline:none; }
+
+
+/* =============================
+   9) Wysoki kontrast — baza GLOBALNA (cała strona)
+   ============================= */
+.high-contrast{
+  /* Przepisanie zmiennych Bootstrap na ciemną skórkę */
+  --bs-body-bg:          var(--bip-contrast-bg);
+  --bs-body-color:       var(--bip-contrast-fg);
+  --bs-border-color:     var(--bip-contrast-fg);
+  --bs-heading-color:    var(--bip-contrast-fg);
+  --bs-link-color:       #00ddff;
+  --bs-link-hover-color: #9eeeff;
+
+  /* Realne kolory tła/tekstu */
+  background-color: var(--bs-body-bg) !important;
+  color:            var(--bs-body-color) !important;
+}
+
+/* Najczęstsze tła Bootstrap — wymuś czerń + białe teksty */
+.high-contrast :is(.bg-body, .bg-body-tertiary, .bg-white, .bg-light){
+  background-color: var(--bip-contrast-bg) !important;
+  color:            var(--bip-contrast-fg) !important;
+}
+
+/* Elementy „kafelkowe” i ramkowe (karty, listy, offcanvas, akordeon, modal) */
+.high-contrast :is(.card, .accordion, .offcanvas, .modal-content, .list-group-item){
+  background-color: var(--bip-contrast-bg) !important;
+  color:            var(--bip-contrast-fg) !important;
+  border-color:     var(--bip-contrast-fg) !important;
+}
+
+
+/* =============================
+   10) Wysoki kontrast — MENU (spójnie z globalem)
+   ============================= */
+.high-contrast :where(.sidebar, .offcanvas) .accordion-button,
+.high-contrast :where(.sidebar, .offcanvas) .list-group-item > a{
+  background-color:var(--bip-contrast-bg) !important;
+  color:var(--bip-contrast-fg) !important;
+  border-color:var(--bip-contrast-fg) !important;
+}
+.high-contrast :where(.sidebar, .offcanvas) .accordion-button:hover,
+.high-contrast :where(.sidebar, .offcanvas) .accordion-button:focus-visible,
+.high-contrast :where(.sidebar, .offcanvas) .list-group-item:hover > a,
+.high-contrast :where(.sidebar, .offcanvas) .list-group-item:focus-within > a,
+.high-contrast :where(.sidebar, .offcanvas) .list-group-item > a:focus-visible{
+  background-color:#222 !important;
+  border-color:var(--bip-contrast-fg) !important;
+}
+
+/* HC – aktywne kafelki (czytelny tekst + biała ramka) */
+.high-contrast :where(.sidebar, .offcanvas) .accordion-button:not(.collapsed),
+.high-contrast :where(.sidebar, .offcanvas) .list-group-item.active > a,
+.high-contrast :where(.sidebar, .offcanvas) .list-group-item > a.active,
+.high-contrast :where(.sidebar, .offcanvas) .list-group-item > a[aria-current="page"]{
+  background-color:var(--bip-hc-active-bg) !important;
+  color:var(--bip-hc-active-text) !important;
+  border-color:var(--bip-contrast-fg) !important;
+}
+.high-contrast :where(.sidebar, .offcanvas) .accordion-button:not(.collapsed):hover,
+.high-contrast :where(.sidebar, .offcanvas) .accordion-button:not(.collapsed):focus-visible{
+  background-color:var(--bip-hc-active-bg) !important;
+  color:var(--bip-hc-active-text) !important;
+  border-color:var(--bip-contrast-fg) !important;
+}
+
+/* HC – białe strzałki ►/▼ dla kategorii i ewentualnych toggle (bez invert) */
+.high-contrast :where(.sidebar, .offcanvas) .accordion-button::after,
+.high-contrast :where(.sidebar, .offcanvas) .accordion-button:not(.collapsed)::after,
+.high-contrast :where(.sidebar, .offcanvas) .list-group > .list-group-item > a.submenu-toggle::after,
+.high-contrast :where(.sidebar, .offcanvas) .list-group > .list-group-item > a.submenu-toggle[aria-expanded="true"]::after{
+  background-image:none !important;
+  transform:none !important;
+  color:var(--bip-contrast-fg) !important;   /* białe */
+}
+
+
+/* =============================
+   11) Wysoki kontrast — Pasek dostępności (A-/A/A+, włącznik HC)
+   Cel: zero „niebieskiego” w HC – wszystko białe i czytelne
+   ============================= */
+.high-contrast .access-toolbar,
+.high-contrast .access-toolbar a,
+.high-contrast .access-toolbar button,
+.high-contrast .access-toolbar .btn,
+.high-contrast .access-toolbar .text-primary,
+.high-contrast .access-toolbar .link-primary,
+.high-contrast .access-toolbar .bi,
+.high-contrast .access-toolbar svg{
+  color: var(--bip-contrast-fg) !important;  /* #fff */
+  fill: currentColor !important;              /* dla SVG */
+}
+
+.high-contrast .access-toolbar .btn,
+.high-contrast .access-toolbar .btn-outline-primary,
+.high-contrast .access-toolbar .btn-primary,
+.high-contrast .access-toolbar .btn-link{
+  background-color: transparent !important;
+  border-color: var(--bip-contrast-fg) !important;  /* biała ramka */
+  color: var(--bip-contrast-fg) !important;         /* biały tekst/ikony */
+  box-shadow: none !important;
+}
+
+.high-contrast .access-toolbar .btn:hover,
+.high-contrast .access-toolbar .btn:focus-visible{
+  background-color: var(--bip-contrast-fg) !important; /* białe tło */
+  color: var(--bip-contrast-bg) !important;            /* czarny tekst */
+  border-color: var(--bip-contrast-fg) !important;
+  outline: none !important;
+}
+
+.high-contrast .access-toolbar .btn-check:checked + .btn,
+.high-contrast .access-toolbar .btn-check:active + .btn,
+.high-contrast .access-toolbar .btn:active{
+  background-color: var(--bip-contrast-fg) !important;
+  color: var(--bip-contrast-bg) !important;
+  border-color: var(--bip-contrast-fg) !important;
+}
+
+.high-contrast .access-toolbar .btn-primary,
+.high-contrast .access-toolbar .btn-secondary,
+.high-contrast .access-toolbar .btn-link,
+.high-contrast .access-toolbar .link-primary{
+  background-color: transparent !important;
+  color: var(--bip-contrast-fg) !important;
+  border-color: var(--bip-contrast-fg) !important;
+  text-decoration: none;
+}
