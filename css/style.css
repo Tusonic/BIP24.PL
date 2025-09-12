@@ -145,6 +145,12 @@
   border:1px solid var(--bip-contrast-fg);
 }
 
+/* Page title + intro paragraph (keep consistent) */
+.bip-box-title + p{
+  color:inherit !important;
+  margin-bottom:1.5rem;
+}
+
 
 /* =============================
    7) Sitemap (spis treści)
@@ -450,3 +456,37 @@ a.accordion-button{ display:block; }
 
 /* Ukryj stary, jednowierszowy układ stopki (zastąpiony przez 4 kolumny) */
 .site-footer > .container:first-of-type{ display:none; }
+
+/* =============================
+   HC helpers for downloads and links sections
+   ============================= */
+.high-contrast #sec-files-heading,
+.high-contrast #sec-links-heading,
+.high-contrast #sec-links2-heading{
+  color: var(--bip-contrast-fg) !important;
+}
+.high-contrast [aria-labelledby="sec-files-heading"],
+.high-contrast [aria-labelledby="sec-links-heading"],
+.high-contrast [aria-labelledby="sec-links2-heading"]{
+  color: var(--bip-contrast-fg) !important;
+}
+.high-contrast [aria-labelledby="sec-files-heading"] a,
+.high-contrast [aria-labelledby="sec-links-heading"] a,
+.high-contrast [aria-labelledby="sec-links2-heading"] a{
+  color: var(--bip-blue) !important;
+}
+.high-contrast [aria-labelledby="sec-files-heading"] .bi,
+.high-contrast [aria-labelledby="sec-links-heading"] .bi,
+.high-contrast [aria-labelledby="sec-links2-heading"] .bi{
+  color: var(--bip-contrast-fg) !important;
+}
+
+/* Force table header/body text to white in HC, keep links blue */
+.high-contrast [aria-labelledby="sec-files-heading"] table thead th,
+.high-contrast [aria-labelledby="sec-files-heading"] table tbody td,
+.high-contrast [aria-labelledby="sec-links-heading"] table thead th,
+.high-contrast [aria-labelledby="sec-links-heading"] table tbody td,
+.high-contrast [aria-labelledby="sec-links2-heading"] table thead th,
+.high-contrast [aria-labelledby="sec-links2-heading"] table tbody td{
+  color: var(--bip-contrast-fg) !important;
+}
