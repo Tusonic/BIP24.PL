@@ -60,6 +60,9 @@
   /* HC – wygląd aktywnych pozycji (czytelne na czarnym tle) */
   --bip-hc-active-bg:       #ffff00;
   --bip-hc-active-text:     #000;
+  
+  /* Wysokosc sticky headera (ustawiana dynamicznie w JS) */
+  --toolbar-offset:         0px;
 }
 
 
@@ -84,6 +87,8 @@
    2) Pasek dostępności (np. A-/A/A+)
    ============================= */
 .access-toolbar{ z-index:1056; }
+/* Ukryj stary tytuł tekstowy w toolbarze, zastąpiony logotypami */
+.access-toolbar strong.me-auto{ display:none; }
 .access-btn:focus-visible{ outline:2px solid currentColor; outline-offset:2px; }
 
 
@@ -109,6 +114,12 @@
    ============================= */
 @media (prefers-reduced-motion:reduce){
   .collapsing, .offcanvas, .accordion-button{ transition:none !important; }
+}
+
+/* Offcanvas pod naglowkiem: zaczynaj ponizej sticky toolbara */
+.offcanvas.below-header{
+  top: var(--toolbar-offset, 0px) !important;
+  height: calc(100% - var(--toolbar-offset, 0px)) !important;
 }
 
 
@@ -407,3 +418,35 @@ a.accordion-button{ display:block; }
   border-color: var(--bip-contrast-fg) !important;
   text-decoration: none;
 }
+
+/* =============================
+   11b) Wysoki kontrast — ikony w toolbarze na hover
+   (wymusza odwrócenie koloru ikon tak jak tekstu)
+   ============================= */
+.high-contrast .access-toolbar .btn .bi{ transition: color .15s ease-in-out, fill .15s ease-in-out; }
+.high-contrast .access-toolbar .btn:hover .bi,
+.high-contrast .access-toolbar .btn:focus-visible .bi,
+.high-contrast .access-toolbar .btn:active .bi,
+.high-contrast .access-toolbar .btn-check:checked + .btn .bi,
+.high-contrast .access-toolbar .btn-check:active + .btn .bi{
+  color: var(--bip-contrast-bg) !important;
+  fill: currentColor !important;
+}
+
+/* =============================
+   12) Stopka 4‑kolumnowa z separatorami pionowymi
+   ============================= */
+.site-footer .footer-col{ padding-left: 0; }
+@media (min-width: 992px){ /* lg+: pokazuj pionowe linie oddzielające */
+  .site-footer .footer-col + .footer-col{
+    border-left: 1px solid var(--bs-border-color);
+  }
+  .site-footer .footer-col{ padding-left: 1rem; }
+}
+/* HC: wyraźne separatory w wysokim kontraście */
+.high-contrast .site-footer .footer-col + .footer-col{
+  border-color: var(--bip-contrast-fg) !important;
+}
+
+/* Ukryj stary, jednowierszowy układ stopki (zastąpiony przez 4 kolumny) */
+.site-footer > .container:first-of-type{ display:none; }

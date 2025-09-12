@@ -9,17 +9,17 @@ if (!function_exists('bip_menu')) {
         'title' => 'Informacje publiczne',
         'slug'  => 'info',
         'items' => [
-          ['label' => 'Historia',       'href' => '/historia'],
-          ['label' => 'Statut',         'href' => '/statut'],
-          ['label' => 'Regulaminy',     'href' => '/regulaminy'],
+          ['label' => 'Historia',       'href' => '/informacje/historia'],
+          ['label' => 'Statut',         'href' => '/informacje/statut'],
+          ['label' => 'Regulaminy',     'href' => '/informacje/regulaminy'],
         ],
       ],
       [
         'title' => 'Organizacja',
         'slug'  => 'org',
         'items' => [
-          ['label' => 'Władze',         'href' => '/wladze'],
-          ['label' => 'Struktura',      'href' => '/struktura'],
+          ['label' => 'Władze',         'href' => '/organizacja/wladze'],
+          ['label' => 'Struktura',      'href' => '/organizacja/struktura'],
         ],
       ],
       [

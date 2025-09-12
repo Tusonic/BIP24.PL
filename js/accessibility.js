@@ -159,4 +159,17 @@
       }
     });
   }
+  /* ========== 7) Offset offcanvas ponizej sticky headera ========== */
+  function updateToolbarOffset(){
+    try{
+      var bar = document.querySelector('.access-toolbar');
+      var h = bar ? Math.round(bar.getBoundingClientRect().height) : 0;
+      document.documentElement.style.setProperty('--toolbar-offset', h + 'px');
+    }catch(_){ /* no-op */ }
+  }
+  // Oblicz na starcie, na resize i przy otwieraniu offcanvas
+  updateToolbarOffset();
+  window.addEventListener('resize', updateToolbarOffset);
+  document.addEventListener('shown.bs.offcanvas', updateToolbarOffset);
+  document.addEventListener('show.bs.offcanvas', updateToolbarOffset);
 })();

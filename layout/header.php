@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Konfiguracja i menu
 require_once __DIR__ . '/../config.php';
 app_require('menu.php');
@@ -19,8 +19,8 @@ $documentTitle = isset($pageTitle) ? "{$pageTitle} – BIP" : "BIP – Platforma
   <link href="<?= asset('css/bootstrap.min.css') ?>" rel="stylesheet">
   <link href="<?= asset('css/style.css') ?>" rel="stylesheet">
 
-  <!-- Ikony (CDN). Opcjonalnie: możesz to hostować lokalnie dla lepszej kontroli -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Ikony Bootstrap Icons: lokalnie -->
+  <link href="<?= asset('css/bootstrap-icons.css') ?>" rel="stylesheet">
 
   <!-- Wydajność: lekkie hinty. Usuń, jeśli CSP/Polityka wymaga minimalizmu -->
   <link rel="preload" href="<?= asset('biplogo.jpg') ?>" as="image">
@@ -37,27 +37,55 @@ $documentTitle = isset($pageTitle) ? "{$pageTitle} – BIP" : "BIP – Platforma
 <!-- Toolbar dostępności (sticky, nad treścią) -->
 <div class="access-toolbar sticky-top border-bottom bg-body-tertiary">
   <div class="container-fluid d-flex flex-wrap align-items-center gap-2 py-2">
+    <div class="d-flex align-items-center gap-2 me-auto" aria-label="Logotypy">
+      <img src="<?= asset('biplogo.png') ?>" alt="BIP" height="32" class="img-fluid">
+      <img src="<?= asset('epuaplogo.png') ?>" alt="ePUAP" height="32" class="img-fluid">
+    </div>
     <strong class="me-auto">BIP – dostępność</strong>
 
-    <!-- Kontrola rozmiaru fontu (aria-label dla czytników) -->
-    <div class="btn-group" role="group" aria-label="Zmiana rozmiaru czcionki">
-      <button class="btn btn-outline-primary" id="fontDec" type="button" aria-label="Zmniejsz czcionkę">A−</button>
-      <button class="btn btn-outline-primary" id="fontReset" type="button" aria-label="Resetuj rozmiar czcionki">A</button>
-      <button class="btn btn-outline-primary" id="fontInc" type="button" aria-label="Zwiększ czcionkę">A+</button>
-    </div>
-
-    <!-- Przełącznik wysokiego kontrastu: aria-pressed aktualizuj w JS -->
-    <button class="btn btn-outline-primary" id="contrastToggle" type="button"
-            aria-pressed="false" aria-label="Przełącz wysoki kontrast">
-      Wysoki kontrast
-    </button>
-
-    <!-- Przycisk menu mobilnego (otwiera offcanvas) -->
-    <button class="btn btn-outline-primary d-md-none ms-2" type="button"
+     <!-- Przycisk menu mobilnego (otwiera offcanvas) -->
+    <button class="btn btn-outline-secondary d-md-none ms-2" type="button"
             data-bs-toggle="offcanvas" data-bs-target="#mobileMenu"
             aria-controls="mobileMenu" aria-label="Otwórz menu">
       Menu
     </button>
+
+    <!-- Kontrola rozmiaru fontu (aria-label dla czytników) -->
+    <div class="btn-group" role="group" aria-label="Zmiana rozmiaru czcionki">
+      <button class="btn btn-outline-secondary" id="fontDec" type="button" aria-label="Zmniejsz czcionkę">A−</button>
+      <button class="btn btn-outline-secondary" id="fontReset" type="button" aria-label="Resetuj rozmiar czcionki">A</button>
+      <button class="btn btn-outline-secondary" id="fontInc" type="button" aria-label="Zwiększ czcionkę">A+</button>
+    </div>
+
+    <!-- Przełącznik wysokiego kontrastu: aria-pressed aktualizuj w JS -->
+    <button class="btn btn-outline-secondary" id="contrastToggle" type="button"
+            aria-pressed="false" aria-label="Przełącz wysoki kontrast">
+      <i class="bi bi-circle-half" aria-hidden="true"></i>
+      <span class="visually-hidden">Wysoki kontrast</span>
+    </button>
+
+   
+
+    <a href="/rejestrzmian/rejestrzmian" class="btn btn-outline-secondary ms-2" title="Jednolity Rejestr Zmian" aria-label="Jednolity Rejestr Zmian">
+      <i class="bi bi-info-circle" aria-hidden="true"></i>
+      <span class="d-none d-sm-inline ms-1">Rejestr zmian</span>
+    </a>
+
+    <a href="/instrukcjabip" class="btn btn-outline-secondary ms-2" title="Instrukcja Obsługi BIP" aria-label="Instrukcja Obsługi BIP">
+      <i class="bi bi-question-circle" aria-hidden="true"></i>
+      <span class="d-none d-sm-inline ms-1">Instrukcja BIP</span>
+    </a>
+
+    <a href="/dostepnosc" class="btn btn-outline-secondary ms-2" title="Deklaracja dostępności" aria-label="Deklaracja dostępności">
+      <i class="bi bi-universal-access-circle" aria-hidden="true"></i>
+      <span class="d-none d-sm-inline ms-1">Dostępność</span>
+    </a>
+
+    <a href="/sitemap" class="btn btn-outline-secondary sitemap-button ms-2" title="Mapa strony" aria-label="Mapa strony">
+<i class="bi bi-diagram-3" aria-hidden="true"></i>
+<span class="d-none d-sm-inline ms-1">Mapa strony</span>
+</a>
+
   </div>
 </div>
 
